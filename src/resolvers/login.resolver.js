@@ -1,7 +1,10 @@
+import { checkUserLogin } from '../services/LoginServices';
+
 export default {
   Mutation: {
-    login: async (args, context) => {
-      console.log('teste');
+    login: async (parent, args, context, info) => {
+      const res = await checkUserLogin(args, context);
+      return res;
     },
   },
 };

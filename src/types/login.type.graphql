@@ -1,8 +1,12 @@
 type Login {
-  email: String
-  password: String
+  email: String!
+  password: String!
 }
 
 type Mutation {
   login(email: String!, password: String!): Login
+}
+
+type Query {
+  login(email: String): Login
 }

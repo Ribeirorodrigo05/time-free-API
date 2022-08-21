@@ -26,25 +26,34 @@ const neo4jGraphQL = new Neo4jGraphQL({ typeDefs, resolvers, driver });
 
   const server = new ApolloServer({
     schema,
+    introspection: true,
+    context: ({ req }) => ({
+      driver,
+      neo4jDatabase: process.env.NEO4J_DATABASE,
+      req,
+      cypherParams: {
+        currentUserId: req?.user?.sub,
+      },
+    }),
     plugins: [
       ApolloServerPluginLandingPageGraphQLPlayground({
         endpoint: '/graphql',
       }),
     ],
-    context: async ({ req }) => {
-      // get the user token from the headers
-      const token = req.headers.authorization || '';
+    // context: async ({ req }) => {
+    //   // get the user token from the headers
+    //   const token = req.headers.authorization || '';
 
-      // try to retrieve a user with the token
-      await getUser(token);
+    //   // try to retrieve a user with the token
+    //   await getUser(token);
 
-      // optionally block the user
-      // we could also check user roles/permissions here
-      // if (!user) throw new AuthenticationError('you must be logged in');
+    //   // optionally block the user
+    //   // we could also check user roles/permissions here
+    //   // if (!user) throw new AuthenticationError('you must be logged in');
 
-      // add the user to the context
-      return { driver };
-    },
+    //   // add the user to the context
+    //   return { driver };
+    // },
   });
 
   // Express Server
