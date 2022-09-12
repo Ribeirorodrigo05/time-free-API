@@ -6,6 +6,7 @@ export async function checkUserLogin(args, context) {
     const result = await session.readTransaction((tx) =>
       tx.run(`MATCH (u:User {email: $email }) RETURN u`, { email })
     );
+    console.log(result, email);
     res = result.records[0].get(0).properties;
     if (!res || res.password !== args.password) {
       res = 'user not found';

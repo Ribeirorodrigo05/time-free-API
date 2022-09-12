@@ -14,11 +14,13 @@ import { resolvers } from './resolvers';
 
 dotenv.config();
 
+//config Server
 const driver = neo4j.driver(
   process.env.NEO4J_URI,
   neo4j.auth.basic(process.env.NEO4J_USER, process.env.NEO4J_PASSWORD)
 );
 
+// create new instance of
 const neo4jGraphQL = new Neo4jGraphQL({ typeDefs, resolvers, driver });
 
 (async () => {
@@ -67,7 +69,7 @@ const neo4jGraphQL = new Neo4jGraphQL({ typeDefs, resolvers, driver });
 
   server.applyMiddleware({ app, path: '/' });
 
-  await httpServer.listen({ port: 4001 });
+  httpServer.listen({ port: 4001 });
 
   console.log(
     `⚛ GraphQL server is ready at http://localhost:${

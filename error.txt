@@ -1,0 +1,6 @@
+Erros comuns e suas soluções 
+    throw new Error("Unknown scheme: ".concat(parsedUrl.scheme));
+    Error: Unknown scheme: neo4j@neo4j+s
+
+verificar endereço do banco no arquivo .env 
+

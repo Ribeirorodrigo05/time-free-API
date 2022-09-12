@@ -1,6 +1,6 @@
 type Login {
-  email: String!
-  password: String!
+    email:         String!                  
+    password:      String!                  
 }
 
 type Mutation {
