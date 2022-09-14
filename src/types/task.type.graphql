@@ -1,12 +1,12 @@
 # Informações virão através da integração com a API do clickup
 
 type Task {
-    id:            ID!                      
-    title:         String!                  
-    description:   String                   
-    points:        String                   
-    author:        User!                    
-    assignee:      User                     
-    begin:         DateTime                 
-    closed:        DateTime                 
+  id: ID!
+  title: String!
+  description: String
+  points: String
+  author: User!
+  assignee: User
+  begin: DateTime
+  closed: DateTime
 }
