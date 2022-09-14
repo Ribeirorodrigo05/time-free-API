@@ -1,4 +1,3 @@
-import axios from 'axios';
 import neo4j from 'neo4j-driver';
 import { Neo4jGraphQL } from '@neo4j/graphql';
 import { ApolloServer } from 'apollo-server-express';
@@ -8,13 +7,23 @@ import { createServer } from 'http';
 import express from 'express';
 
 import dotenv from 'dotenv';
+import bcrypt from 'bcrypt';
 import { typeDefs } from './types';
 import { getUser } from './middlewares/authHandler';
 import { resolvers } from './resolvers';
 
+const hash = async () => {
+  const password = '1234';
+  const hashpassword = await bcrypt.hash(password, 12);
+  console.log(hashpassword);
+  const validator = await bcrypt.compare(password, hashpassword);
+  console.log(validator);
+};
+hash();
+
 dotenv.config();
 
-//config Server
+// config Server
 const driver = neo4j.driver(
   process.env.NEO4J_URI,
   neo4j.auth.basic(process.env.NEO4J_USER, process.env.NEO4J_PASSWORD)

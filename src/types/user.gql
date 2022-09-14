@@ -1,11 +1,25 @@
 # Informações virão através do Google OAuth
 type User {
-    id:            ID!                      @id
-    name:          String!                  
-    email:         String!                  
-    password:      String!                  
-    avatar_url:    String                   
-    created_at:    DateTime                 
-    updated_at:    DateTime                 
-    status:        String                   
+  id: ID! @id
+  firstName: String!
+  lastName: String!
+  email: String!
+  password: String!
+  postionAtWork: String!
+  avatar_url: String
+  country: String
+  created_at: DateTime
+  updated_at: DateTime
+  status: String
+}
+
+type Mutation {
+  RegisterUser(
+    firstName: String!
+    lastName: String!
+    email: String!
+    password: String!
+    postionAtWork: String!
+    country: String
+  ): User
 }
