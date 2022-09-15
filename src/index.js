@@ -7,19 +7,9 @@ import { createServer } from 'http';
 import express from 'express';
 
 import dotenv from 'dotenv';
-import bcrypt from 'bcrypt';
 import { typeDefs } from './types';
 import { getUser } from './middlewares/authHandler';
 import { resolvers } from './resolvers';
-
-const hash = async () => {
-  const password = '1234';
-  const hashpassword = await bcrypt.hash(password, 12);
-  console.log(hashpassword);
-  const validator = await bcrypt.compare(password, hashpassword);
-  console.log(validator);
-};
-hash();
 
 dotenv.config();
 

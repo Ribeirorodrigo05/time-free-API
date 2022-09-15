@@ -1,11 +1,10 @@
-# Informações virão através do Google OAuth
 type User {
   id: ID! @id
   firstName: String!
   lastName: String!
   email: String!
   password: String!
-  postionAtWork: String!
+  positionAtWork: String!
   avatar_url: String
   country: String
   created_at: DateTime
@@ -19,7 +18,8 @@ type Mutation {
     lastName: String!
     email: String!
     password: String!
-    postionAtWork: String!
-    country: String
+    positionAtWork: String!
+    country: String!
+    status: String
   ): User
 }
