@@ -1,27 +1,19 @@
 import neo4j from 'neo4j-driver';
-import { Neo4jGraphQL } from '@neo4j/graphql';
-import { ApolloServer } from 'apollo-server-express';
-import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core';
-
-import { createServer } from 'http';
 import express from 'express';
-
 import dotenv from 'dotenv';
-import bcrypt from 'bcrypt';
+import cors from 'cors';
+import { Neo4jGraphQL } from '@neo4j/graphql';
+import { ApolloServer } from '@apollo/server';
+import { expressMiddleware } from '@apollo/server/express4';
+import { ApolloServerPluginLandingPageGraphQLPlayground } from '@apollo/server-plugin-landing-page-graphql-playground';
+import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+import { createServer } from 'http';
 import { typeDefs } from './types';
-import { getUser } from './middlewares/authHandler';
 import { resolvers } from './resolvers';
 
-const hash = async () => {
-  const password = '1234';
-  const hashpassword = await bcrypt.hash(password, 12);
-  console.log(hashpassword);
-  const validator = await bcrypt.compare(password, hashpassword);
-  console.log(validator);
-};
-hash();
-
 dotenv.config();
+
+const app = express();
 
 // config Server
 const driver = neo4j.driver(
@@ -30,59 +22,50 @@ const driver = neo4j.driver(
 );
 
 // create new instance of
-const neo4jGraphQL = new Neo4jGraphQL({ typeDefs, resolvers, driver });
+
+const neo4jGraphQL = new Neo4jGraphQL({
+  typeDefs,
+  resolvers,
+  driver,
+});
 
 (async () => {
   const schema = await neo4jGraphQL.getSchema();
+  const httpServer = createServer(app);
 
   const server = new ApolloServer({
     schema,
     introspection: true,
-    context: ({ req }) => ({
-      driver,
-      neo4jDatabase: process.env.NEO4J_DATABASE,
-      req,
-      cypherParams: {
-        currentUserId: req?.user?.sub,
-      },
-    }),
     plugins: [
-      ApolloServerPluginLandingPageGraphQLPlayground({
-        endpoint: '/graphql',
-      }),
+      ApolloServerPluginDrainHttpServer({ httpServer }),
+      ApolloServerPluginLandingPageGraphQLPlayground(),
     ],
-    // context: async ({ req }) => {
-    //   // get the user token from the headers
-    //   const token = req.headers.authorization || '';
-
-    //   // try to retrieve a user with the token
-    //   await getUser(token);
-
-    //   // optionally block the user
-    //   // we could also check user roles/permissions here
-    //   // if (!user) throw new AuthenticationError('you must be logged in');
-
-    //   // add the user to the context
-    //   return { driver };
-    // },
   });
 
   // Express Server
-  const app = express();
-
-  app.use(express.json());
-
-  const httpServer = createServer(app);
 
   await server.start();
+  app.use(
+    '/graphql',
+    express.json(),
+    cors(),
+    expressMiddleware(server, {
+      context: async ({ req }) => ({
+        token: req.headers.token,
+        neo4jDatabase: process.env.NEO4J_DATABASE,
+        req,
+        cypherParams: {
+          currentUserId: req?.user?.sub,
+        },
+      }),
+    })
+  );
 
-  server.applyMiddleware({ app, path: '/' });
-
-  httpServer.listen({ port: 4001 });
-
-  console.log(
-    `⚛ GraphQL server is ready at http://localhost:${
-      httpServer.address().port
-    }${server.graphqlPath}`
+  httpServer.listen({ port: 3001 }, () =>
+    console.log(
+      `⚛ GraphQL server is ready at http://localhost:${
+        httpServer.address().port
+      }/graphql`
+    )
   );
 })();

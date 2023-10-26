@@ -23,3 +23,6 @@ yarn-error.log*
 *~
 *.orig
 .idea/
+
+#package
+package-lock.json
