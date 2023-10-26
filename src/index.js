@@ -1,4 +1,3 @@
-import neo4j from 'neo4j-driver';
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
@@ -10,18 +9,11 @@ import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHt
 import { createServer } from 'http';
 import { typeDefs } from './types';
 import { resolvers } from './resolvers';
+import { driver } from './clients/neo4j';
 
 dotenv.config();
 
 const app = express();
-
-// config Server
-const driver = neo4j.driver(
-  process.env.NEO4J_URI,
-  neo4j.auth.basic(process.env.NEO4J_USER, process.env.NEO4J_PASSWORD)
-);
-
-// create new instance of
 
 const neo4jGraphQL = new Neo4jGraphQL({
   typeDefs,
