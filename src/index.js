@@ -1,5 +1,4 @@
 import express from 'express';
-import dotenv from 'dotenv';
 import cors from 'cors';
 import { Neo4jGraphQL } from '@neo4j/graphql';
 import { ApolloServer } from '@apollo/server';
@@ -10,8 +9,6 @@ import { createServer } from 'http';
 import { typeDefs } from './types';
 import { resolvers } from './resolvers';
 import { driver } from './clients/neo4j';
-
-dotenv.config();
 
 const app = express();
 
