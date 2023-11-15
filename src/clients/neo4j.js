@@ -1,4 +1,4 @@
-const neo4j = require("neo4j-driver");
+import neo4j from "neo4j-driver";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -35,6 +35,5 @@ export const executeWrite = async (cypher, variables, error) => {
     await session.close();
   }
 
-  console.log(result);
   return result;
 };
